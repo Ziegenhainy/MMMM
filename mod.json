@@ -1,0 +1,14 @@
+{
+	"geode": "3.4.0",
+	"gd": {
+		"win": "2.206",
+		"android": "2.206",
+		"mac": "2.206",
+		"ios": "2.206"
+	},
+	"id": "ziegenhainy.mmmm",
+	"name": "Menu Muscle Memory Mingler",
+	"version": "v1.0.0",
+	"developer": "Ziegenhainy",
+	"description": "Shuffles a ton of menu buttons to mingle your muscle memory"
+}
