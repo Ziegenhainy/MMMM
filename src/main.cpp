@@ -1,4 +1,6 @@
+#include "Geode/binding/EditorUI.hpp"
 #include "Geode/binding/GJUserScore.hpp"
+#include "Geode/binding/LevelEditorLayer.hpp"
 #include "Geode/cocos/base_nodes/Layout.hpp"
 #include <Geode/Geode.hpp>
 #include <Geode/modify/MenuLayer.hpp>
@@ -8,6 +10,7 @@
 #include <Geode/modify/ProfilePage.hpp>
 #include <Geode/modify/EditLevelLayer.hpp>
 #include <Geode/modify/LevelSearchLayer.hpp>
+#include <Geode/modify/EditorUI.hpp>
 
 using namespace geode::prelude;
 
@@ -208,7 +211,7 @@ class $modify(HookedEditLevelLayer, EditLevelLayer) {
 
 class $modify(HookedLevelSearchLayer, LevelSearchLayer) {
 	static void onModify(auto& self) {
-		if (!self.setHookPriority("PauseLayer::customSetup", -100)) {
+		if (!self.setHookPriority("LevelSearchLayer::init", -100)) {
 			log::warn("Failed to set hook priority.");
 		}
 	}
@@ -223,6 +226,8 @@ class $modify(HookedLevelSearchLayer, LevelSearchLayer) {
 			this->getChildByID("length-filter-menu"),
 			this->getChildByID("search-button-menu")
 		};
+		auto protectedChild = menusRaw[2]->getChildByID("demon-type-filter-button");
+		menusRaw[2]->removeChildByID("demon-type-filter-button");
 
 		CCNode* menus[] = {
 			this->getChildByID("other-filter-menu"),
@@ -230,6 +235,42 @@ class $modify(HookedLevelSearchLayer, LevelSearchLayer) {
 		};
 
 		for(auto menu : menusRaw) shuffleRaw(menu);
+		for(auto menu : menus) shuffle(menu);
+
+		menusRaw[2]->addChild(protectedChild);
+
+		return true;
+	}
+};
+
+class $modify(HookedEditorUI, EditorUI) {
+	static void onModify(auto& self) {
+		if (!self.setHookPriority("EditorUI::init", -100)) {
+			log::warn("Failed to set hook priority.");
+		}
+	}
+
+	bool init(LevelEditorLayer* editorLayer) {
+		if (!EditorUI::init(editorLayer)) return false;
+
+		auto deleteMenus = this->getChildByID("delete-category-menu");
+
+		CCNode* menus[] = {
+			this->getChildByID("toolbar-categories-menu"),
+			deleteMenus->getChildByID("delete-button-menu"),
+			deleteMenus->getChildByID("delete-filter-menu"),
+			this->getChildByID("toolbar-toggles-menu"),
+			this->getChildByID("undo-menu"),
+			this->getChildByID("playback-menu"),
+			this->getChildByID("playtest-menu"),
+			this->getChildByID("zoom-menu"),
+			this->getChildByID("link-menu"),
+			this->getChildByID("settings-menu"),
+			this->getChildByID("editor-buttons-menu"),
+			this->getChildByID("layer-menu"),
+			this->getChildByID("build-tabs-menu"),
+		};
+
 		for(auto menu : menus) shuffle(menu);
 
 		return true;
