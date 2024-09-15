@@ -215,7 +215,7 @@ class $modify(HookedLevelSearchLayer, LevelSearchLayer) {
 
 	bool init(int p0) {
 		if (!LevelSearchLayer::init(p0)) return false;
-		log::debug("LevelSearchLayer init");
+	
 		CCNode* menusRaw[] = {
 			this->getChildByID("quick-search-menu"),
 			this->getChildByID("exit-menu"),
