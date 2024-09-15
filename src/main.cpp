@@ -7,6 +7,7 @@
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/ProfilePage.hpp>
 #include <Geode/modify/EditLevelLayer.hpp>
+#include <Geode/modify/LevelSearchLayer.hpp>
 
 using namespace geode::prelude;
 
@@ -28,6 +29,21 @@ void shuffle(CCNode* menu) {
 	}
 	
 	menu->updateLayout();
+}
+
+void shuffleRaw(CCNode* menu) {
+	int childrenCount = menu->getChildrenCount();
+	if (childrenCount <= 1) return;
+	log::debug("rawshuffling menu: {}", menu->getID());
+	auto children = menu->getChildren();
+
+	for(int i=0; i<childrenCount; i++) {
+		auto child1 = static_cast<CCNode*>(children->objectAtIndex(i));
+		auto child2 = static_cast<CCNode*>(children->objectAtIndex(rand()%(childrenCount-i)+i));
+		auto temp = child2->getPosition();
+		child2->setPosition(child1->getPosition());
+		child1->setPosition(temp);
+	}
 }
 
 class $modify(HookedMenuLayer, MenuLayer) {
@@ -123,21 +139,19 @@ class $modify(HookedPauseLayer, PauseLayer) {
 
 	virtual void customSetup() {
 		PauseLayer::customSetup();
+		
+		CCNode* menusRaw[] = {
+			this->getChildByID("center-button-menu"),
+		};
 
 		CCNode* menus[] = {
-			this->getChildByID("center-button-menu"),
 			this->getChildByID("left-button-menu"),
 			this->getChildByID("right-button-menu"),
 			this->getChildByID("bottom-button-menu")
 		};
-		auto centerButtonMenuLayout = RowLayout::create();
-		centerButtonMenuLayout->setGap(15.0f);
-		menus[0]->setLayout(centerButtonMenuLayout);
-		menus[0]->setContentWidth(500.0f);
 
-		for(auto menu : menus) {
-			shuffle(menu);
-		}
+		for(auto menu : menusRaw) shuffleRaw(menu);
+		for(auto menu : menus) shuffle(menu);
 	}
 };
 
@@ -188,6 +202,36 @@ class $modify(HookedEditLevelLayer, EditLevelLayer) {
 		for(auto menu : menus) {
 			shuffle(menu);
 		}
+		return true;
+	}
+};
+
+class $modify(HookedLevelSearchLayer, LevelSearchLayer) {
+	static void onModify(auto& self) {
+		if (!self.setHookPriority("PauseLayer::customSetup", -100)) {
+			log::warn("Failed to set hook priority.");
+		}
+	}
+
+	bool init(int p0) {
+		if (!LevelSearchLayer::init(p0)) return false;
+		log::debug("LevelSearchLayer init");
+		CCNode* menusRaw[] = {
+			this->getChildByID("quick-search-menu"),
+			this->getChildByID("exit-menu"),
+			this->getChildByID("difficulty-filter-menu"),
+			this->getChildByID("length-filter-menu"),
+			this->getChildByID("search-button-menu")
+		};
+
+		CCNode* menus[] = {
+			this->getChildByID("other-filter-menu"),
+			this->getChildByID("bottom-left-menu")
+		};
+
+		for(auto menu : menusRaw) shuffleRaw(menu);
+		for(auto menu : menus) shuffle(menu);
+
 		return true;
 	}
 };
