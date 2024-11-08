@@ -89,19 +89,26 @@ class $modify(HookedCreatorLayer, CreatorLayer) {
 		if (!CreatorLayer::init()) {
 			return false;
 		}
+		auto creatorButtons = this->getChildByID("creator-buttons-menu");
+
 		CCNode* menus[] = {
-			this->getChildByID("creator-buttons-menu"),
 			this->getChildByID("exit-menu"),
 			this->getChildByID("bottom-left-menu"),
 			this->getChildByID("top-right-menu"),
 			this->getChildByID("bottom-right-menu")
 		};
 
-		menus[0]->setContentWidth(500);
+		// menus[0]->setContentWidth(500);
 		
 		
 		for(auto menu : menus) {
 			shuffle(menu);
+		}
+		if(Loader::get()->isModLoaded("alphalaneous.vanilla_pages")) {
+			shuffle(creatorButtons);
+		}
+		else {
+			shuffleRaw(creatorButtons);
 		}
 		return true;
 	}
