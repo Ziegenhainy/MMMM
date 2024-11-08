@@ -11,6 +11,7 @@
 #include <Geode/modify/EditLevelLayer.hpp>
 #include <Geode/modify/LevelSearchLayer.hpp>
 #include <Geode/modify/EditorUI.hpp>
+#include <Geode/modify/LevelInfoLayer.hpp>
 
 using namespace geode::prelude;
 
@@ -278,6 +279,37 @@ class $modify(HookedEditorUI, EditorUI) {
 			this->getChildByID("build-tabs-menu"),
 		};
 
+		for(auto menu : menus) shuffle(menu);
+
+		return true;
+	}
+};
+
+// TODO: shuffle coin order
+class $modify(HookedLevelInfoLayer, LevelInfoLayer) {
+	static void onModify(auto& self) {
+		if (!self.setHookPriority("LevelInfoLayer::init", -100)) {
+			log::warn("Failed to set hook priority.");
+		}
+	}
+
+	bool init(GJGameLevel* level, bool challenge) {
+		if (!LevelInfoLayer::init(level, challenge)) return false;
+
+		CCNode* menusRaw[] = {
+			this->getChildByID("other-menu"),
+			this->getChildByID("settings-menu"),
+			this->getChildByID("play-menu"),
+			this->getChildByID("garage-menu")
+		};
+
+		CCNode* menus[] = {
+			this->getChildByID("right-side-menu"),
+			this->getChildByID("creator-info-menu"),
+			this->getChildByID("left-side-menu"),
+		};
+		
+		for(auto menu : menusRaw) shuffleRaw(menu);
 		for(auto menu : menus) shuffle(menu);
 
 		return true;
