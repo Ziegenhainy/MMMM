@@ -1,5 +1,5 @@
 {
-	"geode": "3.9.0",
+	"geode": "4.0.0-beta.1",
 	"gd": {
 		"win": "2.206",
 		"android": "2.206",
@@ -10,5 +10,13 @@
 	"name": "Menu Muscle Memory Mingler",
 	"version": "v1.0.0-beta.1",
 	"developer": "Ziegenhainy",
-	"description": "Shuffles menus to mingle your muscle memory"
+	"description": "Shuffles menus to mingle your muscle memory",
+	"issues": {
+		"info": "Report issues to the Github Repo!",
+		"url": "https://github.com/Ziegenhainy/MMMM/issues"
+	},
+	"tags": [
+		"offline",
+		"joke"
+	]
 }
