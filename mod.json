@@ -8,7 +8,13 @@
 	},
 	"id": "ziegenhainy.mmmm",
 	"name": "Menu Muscle Memory Mingler",
-	"version": "v1.0.0-beta.2",
+	"version": "v1.0.0-beta.3",
+	"dependencies":[
+		{
+			"id": "geode.node-ids",
+			"version": ">=v1.17.0"
+		}
+	],
 	"developer": "Ziegenhainy",
 	"description": "Shuffles menus to mingle your muscle memory",
 	"issues": {
