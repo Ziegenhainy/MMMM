@@ -1,3 +1,6 @@
+# 1.0.0-beta.4
+- Update to Geode 4.0.1
+
 # 1.0.0-beta.3
 - Added Node IDs as dependency
 
