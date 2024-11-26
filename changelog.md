@@ -1,3 +1,8 @@
+# 1.0.0-beta.5
+- Shuffling LevelSelectLayer
+- Shuffling MenuLayer social media buttons
+- Shuffling LevelBrowser levels
+
 # 1.0.0-beta.4
 - Update to Geode 4.0.1
 

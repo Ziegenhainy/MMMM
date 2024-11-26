@@ -1,6 +1,12 @@
+#include "Geode/Enums.hpp"
 #include "Geode/binding/EditorUI.hpp"
+#include "Geode/binding/GJSearchObject.hpp"
 #include "Geode/binding/GJUserScore.hpp"
+#include "Geode/binding/LevelBrowserLayer.hpp"
 #include "Geode/binding/LevelEditorLayer.hpp"
+#include "Geode/binding/LevelSelectLayer.hpp"
+#include "Geode/cocos/cocoa/CCArray.h"
+#include "Geode/loader/Log.hpp"
 // #include "Geode/ui/Layout.hpp"
 #include <Geode/Geode.hpp>
 #include <Geode/modify/MenuLayer.hpp>
@@ -12,6 +18,8 @@
 #include <Geode/modify/LevelSearchLayer.hpp>
 #include <Geode/modify/EditorUI.hpp>
 #include <Geode/modify/LevelInfoLayer.hpp>
+#include <Geode/modify/LevelSelectLayer.hpp>
+#include <Geode/modify/LevelBrowserLayer.hpp>
 
 using namespace geode::prelude;
 
@@ -72,9 +80,16 @@ class $modify(HookedMenuLayer, MenuLayer) {
 			this->getChildByID("close-menu")
 		};
 		
+		CCNode* socialMediaMenu = this->getChildByID("social-media-menu");
+		CCNode* safeChild = socialMediaMenu->getChildByID("robtop-logo-button");
+		socialMediaMenu->removeChildByID("robtop-logo-button");
+
 		for(auto menu : menus) {
 			shuffle(menu);
 		}
+		shuffleRaw(socialMediaMenu);
+		socialMediaMenu->addChild(safeChild);
+
 		return true;
 	}
 };
@@ -315,3 +330,54 @@ class $modify(HookedLevelInfoLayer, LevelInfoLayer) {
 		return true;
 	}
 };
+
+void shuffleCCArray(CCArray* arr) {
+	int arrLen = arr->count();
+	for(int i=0; i<arrLen; i++) {
+		int randi = rand()%(arrLen-i)+i;
+		arr->exchangeObjectAtIndex(i, randi);
+	}
+}
+
+// TODO: shuffle menus
+class $modify(HookedLevelBrowserLayer, LevelBrowserLayer) {
+	// static void onModify(auto& self) {
+	// 	if (!self.setHookPriority("LevelBrowserLayer::init", -100)) {
+	// 		log::warn("Failed to set hook priority.");
+	// 	}
+	// }
+	
+	// bool init(GJSearchObject* p0) { 
+	// 	if (!LevelBrowserLayer::init(p0)) return false;
+	// 	auto a = p0->m_searchType == SearchType::TopListsUnused;
+	// 	log::debug("{}", static_cast<int>(p0->m_searchType));
+
+	// 	CCNode* menus[] = {
+
+	// 	};
+
+	// 	for(auto menu : menus) shuffle(menu);
+
+	// 	return true;
+	// }
+	virtual void loadLevelsFinished(CCArray* p0, char const* p1, int p2) {
+		shuffleCCArray(p0);
+		LevelBrowserLayer::loadLevelsFinished(p0, p1, p2);
+	}
+};
+
+class $modify(HookedLevelSelectLayer, LevelSelectLayer) {
+	static void onModify(auto& self) {
+		if (!self.setHookPriority("LevelSelectLayer::init", -100)) {
+			log::warn("Failed to set hook priority.");
+		}
+	}
+
+	bool init(int page) {
+		if (!LevelSelectLayer::init(page)) return false;
+		
+		shuffleCCArray(m_scrollLayer->m_dynamicObjects);
+		return true;
+	}
+};
+
