@@ -1,6 +1,4 @@
-#include "Geode/Enums.hpp"
 #include "Geode/binding/EditorUI.hpp"
-#include "Geode/binding/GJSearchObject.hpp"
 #include "Geode/binding/GJUserScore.hpp"
 #include "Geode/binding/LevelBrowserLayer.hpp"
 #include "Geode/binding/LevelEditorLayer.hpp"
