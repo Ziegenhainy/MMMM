@@ -1,3 +1,6 @@
+# 1.0.0-beta.6
+- Fixed occasional crashes
+
 # 1.0.0-beta.5
 - Shuffling LevelSelectLayer
 - Shuffling MenuLayer social media buttons
