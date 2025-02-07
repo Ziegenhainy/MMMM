@@ -22,6 +22,7 @@
 using namespace geode::prelude;
 
 void shuffle(CCNode* menu) {
+	if (!menu) return;
 	int childrenCount = menu->getChildrenCount();
 	if (childrenCount <= 1) return;
 	log::debug("shuffling menu: {}", menu->getID());
@@ -31,11 +32,13 @@ void shuffle(CCNode* menu) {
 		auto child = static_cast<CCNode*>(menu->getChildren()->objectAtIndex(rand()%childrenCount));
 		// log::debug("Children: {}",childrenCount);
 		shuffledChildrenBuffer[i] = child;
+		child->retain();
 		menu->removeChild(child);
 	}
 	
 	for(auto child : shuffledChildrenBuffer) {
 		menu->addChild(child,0);
+		child->release();
 	}
 	
 	menu->updateLayout();
@@ -80,6 +83,7 @@ class $modify(HookedMenuLayer, MenuLayer) {
 		
 		CCNode* socialMediaMenu = this->getChildByID("social-media-menu");
 		CCNode* safeChild = socialMediaMenu->getChildByID("robtop-logo-button");
+		safeChild->retain();
 		socialMediaMenu->removeChildByID("robtop-logo-button");
 
 		for(auto menu : menus) {
@@ -87,6 +91,7 @@ class $modify(HookedMenuLayer, MenuLayer) {
 		}
 		shuffleRaw(socialMediaMenu);
 		socialMediaMenu->addChild(safeChild);
+		safeChild->release();
 
 		return true;
 	}
@@ -248,6 +253,7 @@ class $modify(HookedLevelSearchLayer, LevelSearchLayer) {
 			this->getChildByID("search-button-menu")
 		};
 		auto protectedChild = menusRaw[2]->getChildByID("demon-type-filter-button");
+		protectedChild->retain();
 		menusRaw[2]->removeChildByID("demon-type-filter-button");
 
 		CCNode* menus[] = {
@@ -259,6 +265,7 @@ class $modify(HookedLevelSearchLayer, LevelSearchLayer) {
 		for(auto menu : menus) shuffle(menu);
 
 		menusRaw[2]->addChild(protectedChild);
+		protectedChild->release();
 
 		return true;
 	}
